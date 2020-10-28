@@ -9,7 +9,37 @@ router.get("/todos", (req, res) => {
       if (todo.length != 0) {
         res.send(todo);
       } else {
-        res.send("There are no todo");
+        res.send("There are no todos");
+      }
+    })
+    .catch((err) => {
+      res.send(err);
+    });
+});
+
+router.get("/todos/open", (req, res) => {
+  Todo.find({ currentState: "open" })
+    .exec()
+    .then((todo) => {
+      if (todo.length !== 0) {
+        res.send(todo);
+      } else {
+        res.send("There are no todos");
+      }
+    })
+    .catch((err) => {
+      res.send(err);
+    });
+});
+
+router.get("/todos/done", (req, res) => {
+  Todo.find({ currentState: "done" })
+    .exec()
+    .then((todo) => {
+      if (todo.length !== 0) {
+        res.send(todo);
+      } else {
+        res.send("There are no todos");
       }
     })
     .catch((err) => {
@@ -26,7 +56,7 @@ router.get("/todos/:id", (req, res) => {
       if (todo) {
         res.send(todo);
       } else {
-        res.send("Todos are not found");
+        res.send("Todo are not found");
       }
     })
     .catch((err) => {
@@ -65,7 +95,7 @@ router.put("/todos/:id", (req, res) => {
       res.send(err);
     });
 });
-router.delete("/todo/delete/:id", (req, res) => {
+router.delete("/todos/delete/:id", (req, res) => {
   const id = req.params.id;
   Todo.findOneAndDelete({
     _id: id,

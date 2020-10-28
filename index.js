@@ -3,7 +3,7 @@ const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 3001;
 const path = require("path");
-const mongoose = require("./config/dbConnect");
+const mongoose = require("./config/DBConnect");
 
 app.use(express.static(path.join(__dirname, "client/build")));
 app.use(express.json());

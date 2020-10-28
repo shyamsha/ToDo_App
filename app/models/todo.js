@@ -14,7 +14,7 @@ const todoSchema = new Schema({
     currentState:{
         type:String,
         required:true,
-        default:["open","done"]
+        default:"open"
     },
     description: {
         type: String,
@@ -22,12 +22,11 @@ const todoSchema = new Schema({
         minlength: 1,
         maxlength: 256,
     },
-    Priority: {
+    priority: {
         type: String,
         required:true,
-        default:"low"
     },
-    DueDate:{
+    dueDate:{
         type:String,
         required:true
     },
