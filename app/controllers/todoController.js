@@ -17,23 +17,9 @@ router.get("/todos", (req, res) => {
     });
 });
 
-router.get("/todos/open", (req, res) => {
-  Todo.find({ currentState: "open" })
-    .exec()
-    .then((todo) => {
-      if (todo.length !== 0) {
-        res.send(todo);
-      } else {
-        res.send("There are no todos");
-      }
-    })
-    .catch((err) => {
-      res.send(err);
-    });
-});
-
-router.get("/todos/done", (req, res) => {
-  Todo.find({ currentState: "done" })
+router.get("/todos/about", (req, res) => {
+  const value = req.query.currentState;
+  Todo.find({ currentState: value })
     .exec()
     .then((todo) => {
       if (todo.length !== 0) {
