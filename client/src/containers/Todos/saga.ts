@@ -7,7 +7,24 @@ import { TodoActionTypes, Todo } from "./types";
 
 type SagaAction<T> = Action & { payload: T };
 
-function* todos({ payload: params }: SagaAction<Todo>) {
+function* todos() {
+  try {
+    const res = yield call(Api.todos);
+    if (res.error) {
+      yield put(todoError(res.error));
+    } else {
+      yield put(todoSuccess(res.data));
+    }
+  } catch (err) {
+    if (err instanceof Error) {
+      yield put(todoError(err));
+    } else {
+      yield put(todoError(unknownError("An unknown error occurred")));
+    }
+  }
+}
+
+function* todoCreate({ payload: params }: SagaAction<Todo>) {
   try {
     const res = yield call(Api.todoCreate, params);
     if (res.error) {
@@ -25,7 +42,8 @@ function* todos({ payload: params }: SagaAction<Todo>) {
 }
 
 function* watchFetchRequest() {
-  yield takeLatest(TodoActionTypes.TODO_REQUEST, todos);
+  yield takeLatest(TodoActionTypes.TODO_REQUEST,todos)
+  yield takeLatest(TodoActionTypes.TODO_CREATE_REQUEST, todoCreate);
 }
 
 export function* todoSaga() {

@@ -22,7 +22,7 @@ const reducer: Reducer<TodoState, A> = (
       return {
         ...state,
         loading: true,
-        errors: { ...state.errors, todos: undefined }
+        errors: { ...state.errors, todo: undefined }
       };
     case TodoActionTypes.TODO_SUCCESS:
       return {...state,loading:false, todos:action.payload};

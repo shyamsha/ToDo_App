@@ -1,4 +1,4 @@
-import rules, { roles } from '../../utils/rbac-rules';
+import rules from '../../utils/rbac-rules';
 
 export const check = (rbacRules: any, user: any, action: any, data: any) => {
   const role = user.roles && user.roles.length && user.roles[0].name;
