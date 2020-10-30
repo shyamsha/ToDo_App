@@ -1,5 +1,6 @@
-import React, {  } from "react";
-import { Form, Input, Select, Button, } from "antd";
+import React from "react";
+import { Form, Input, Select, Button, DatePicker } from "antd";
+import { Todo } from "../types";
 const { Option } = Select;
 
 const formItemLayout = {
@@ -34,24 +35,12 @@ const tailFormItemLayout = {
 };
 
 interface Props {
-  onFinish: () => void;
+  onFinish: (values:Todo) => void;
+  loading:boolean;
 }
 
 export default function ContactForm(props: Props) {
   const [form] = Form.useForm();
-
-  const prefixSelector = (
-    <Form.Item name="prefix" noStyle>
-      <Select
-        style={{
-          width: 70,
-        }}
-      >
-        <Option value="91">+91</Option>
-      </Select>
-    </Form.Item>
-  );
-
 
   return (
     <Form
@@ -65,12 +54,12 @@ export default function ContactForm(props: Props) {
       scrollToFirstError
     >
       <Form.Item
-        name="name"
-        label="Name"
+        name="title"
+        label="Summary"
         rules={[
           {
             required: true,
-            message: "Please provide your Name!",
+            message: "Please provide your Summary!",
             whitespace: true,
           },
         ]}
@@ -78,80 +67,48 @@ export default function ContactForm(props: Props) {
         <Input />
       </Form.Item>
       <Form.Item
-        name="companyname"
-        label="Company Name"
+        name="description"
+        label="Description"
         rules={[
           {
             required: true,
-            message: "Please provide your Company Name!",
+            message: "Please provide your Description!",
             whitespace: true,
           },
         ]}
       >
-        <Input />
+        <Input.TextArea />
       </Form.Item>
       <Form.Item
-        name="email"
-        label="E-mail"
-        rules={[
-          {
-            type: "email",
-            message: "The input is not valid E-mail!",
-          },
-          {
-            required: true,
-            message: "Please provide your E-mail!",
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        name="designation"
-        label="Designation"
+        name="dueDate"
+        label="Due Date"
         rules={[
           {
             required: true,
-            message: "Please provide your Designation!",
+            message: "Please provide your Due Date!",
           },
         ]}
       >
-        <Input />
+        <DatePicker />
       </Form.Item>
       <Form.Item
-        name="gst"
-        label="Gst Treatment"
+        name="priority"
+        label="Priority"
         rules={[
           {
             required: true,
-            message: "Please provide your Gst Treatment!",
+            message: "Please provide your Priority!",
           },
         ]}
       >
-        <Input />
+        <Select placeholder="Select a option">
+          <Option value="high">High</Option>
+          <Option value="medium">Medium</Option>
+          <Option value="low">Low</Option>
+        </Select>
       </Form.Item>
-      <Form.Item
-        name="phone"
-        label="Phone Number"
-        rules={[
-          {
-            required: true,
-            pattern: /^[^0-9]*(?:(\d)[^0-9]*){10}$/,
-            message: "Please provide your valid Mobile Number",
-          },
-        ]}
-      >
-        <Input
-          type="number"
-          addonBefore={prefixSelector}
-          style={{
-            width: "100%",
-          }}
-        />
-      </Form.Item>
-
       <Form.Item {...tailFormItemLayout}>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" loading={props.loading}>
           Submit
         </Button>
       </Form.Item>

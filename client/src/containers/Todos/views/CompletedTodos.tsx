@@ -1,6 +1,12 @@
-import React, { Fragment } from 'react'
+import React, { Fragment } from 'react';
+import { Todo } from '../types';
 
-export default function CompletedTodos() {
+interface Props {
+  todos: Todo[];
+  loading: boolean;
+}
+
+export default function CompletedTodos(props:Props) {
   return (
     <Fragment>
       <div>

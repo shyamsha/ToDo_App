@@ -3,13 +3,11 @@ import { Reducer } from "redux";
 
 const initialState: TodoState = {
   loading: false,
-  todos:null,
+  todos: null,
   errors: {
-    todo:undefined
-  }
+    todo: undefined,
+  },
 };
-
-
 
 type A<T = string, U = any> = { type: T; payload: U };
 
@@ -22,15 +20,30 @@ const reducer: Reducer<TodoState, A> = (
       return {
         ...state,
         loading: true,
-        errors: { ...state.errors, todo: undefined }
+        errors: { ...state.errors, todo: undefined },
       };
     case TodoActionTypes.TODO_SUCCESS:
-      return {...state,loading:false, todos:action.payload};
+      return { ...state, loading: false, todos: action.payload };
     case TodoActionTypes.TODO_ERROR:
       return {
         ...state,
         loading: false,
-        errors: { ...state.errors, todo: action.payload }
+        errors: { ...state.errors, todo: action.payload },
+      };
+
+    case TodoActionTypes.TODO_CREATE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        errors: { ...state.errors, todo: undefined },
+      };
+    case TodoActionTypes.TODO_CREATE_SUCCESS:
+      return { ...state, loading: false, todos: action.payload };
+    case TodoActionTypes.TODO_CREATE_ERROR:
+      return {
+        ...state,
+        loading: false,
+        errors: { ...state.errors, todo: action.payload },
       };
 
     default:

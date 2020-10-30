@@ -1,6 +1,6 @@
 
 export interface Todo {
-  currentState?: string;
+  currentState: string;
   _id?: string;
   title: string;
   description: string;
@@ -9,13 +9,6 @@ export interface Todo {
   createdAt?: Date;
   __v?: number;
 }
-
-
-
-export interface Todos {
-  data: Todo[];
-}
-
 
 export enum TodoActionTypes {
   TODO_REQUEST = "@@todo/dashboard/TODO_REQUEST",

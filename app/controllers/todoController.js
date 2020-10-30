@@ -56,7 +56,7 @@ router.post("/todo/create", (req, res) => {
   todo
     .save()
     .then((todo) => {
-      res.send(todo);
+      Todo.find().then((todo) => res.send(todo));
     })
     .catch((err) => {
       res.send(err);
@@ -88,7 +88,7 @@ router.delete("/todos/delete/:id", (req, res) => {
   })
     .then((todo) => {
       if (todo) {
-        res.send(todo);
+        Todo.find().then((todo) => res.send(todo));
       }
       res.send("contact deleted successfully");
     })

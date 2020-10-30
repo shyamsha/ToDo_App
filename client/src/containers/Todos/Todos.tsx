@@ -1,39 +1,56 @@
 import React, { Component, Dispatch, Fragment } from "react";
 import { Tabs } from "antd";
 import AllTodos from "./views/AllTodos";
-import CompletedTodos from "./views/CompletedTodos";
-import PendingTasks from "./views/PendingTasks";
 import { Select, Input } from "antd";
 import { connect } from "react-redux";
 import { PlusCircleFilled } from "@ant-design/icons";
 import { ApplicationState } from "../../store";
-import { todoRequest } from "./actions";
+import { todoCreateRequest, todoRequest } from "./actions";
 import { Todo } from "./types";
+import PopUp from "./views/PopUp";
+import moment from "moment";
 
 const { Search } = Input;
 const { Option } = Select;
 const { TabPane } = Tabs;
 
 interface PropsFromState {
-  loading:boolean;
-  todos:Todo[];
-  error:{
-    todo:string;
-  }
+  loading: boolean;
+  todos: Todo[];
+  error: {
+    todo: string;
+  };
 }
 
 interface PropsDispatchFromState {
-  onTodo:typeof todoRequest;
+  onTodo: typeof todoRequest;
+  onTodoCreate: typeof todoCreateRequest;
 }
 
 type AllProps = PropsFromState & PropsDispatchFromState;
 
-interface State {}
+interface State {
+  tab: string;
+  visible: boolean;
+}
 
 class Todos extends Component<AllProps, State> {
-  state: State = {};
+  state: State = {
+    tab: "1",
+    visible: false,
+  };
 
-  tabChange = (key: string) => {};
+  tabChange = (key: string) => {
+    if (key === "1") {
+      this.setState({ tab: "1" });
+    }
+    if (key === "2") {
+      this.setState({ tab: "2" });
+    }
+    if (key === "3") {
+      this.setState({ tab: "3" });
+    }
+  };
 
   priorityChange = (value: string) => {};
 
@@ -43,13 +60,41 @@ class Todos extends Component<AllProps, State> {
     console.log(value);
   };
 
+  showModal = () => {
+    this.setState({ visible: !this.state.visible });
+  };
+
+  handleCancel = () => {
+    this.setState({ visible: false });
+  };
+
+  onFinish = (values: Todo) => {
+    console.log(values);
+    const data = {
+      title: values.title,
+      description: values.description,
+      dueDate: moment(values.dueDate).format("DD/MM/YY"),
+      priority: values.priority,
+      currentState: "open",
+    };
+    this.props.onTodoCreate(data);
+  };
+
   componentDidMount() {
-    this.props.onTodo()
-    
+    this.props.onTodo();
+  }
+
+  componentDidUpdate(prevProps: AllProps, prevState: State) {
+    const prev = prevProps;
+    const now = this.props;
+    if (prev.loading && !now.loading && prevState.visible) {
+      this.setState({ visible: false });
+    }
   }
 
   render() {
-    const {todos,loading} = this.props
+    const { todos, loading } = this.props;
+    const { visible, tab } = this.state;
     return (
       <Fragment>
         <div style={{ padding: "2rem" }}>
@@ -61,12 +106,15 @@ class Todos extends Component<AllProps, State> {
               paddingBottom: "1rem",
               fontWeight: "bolder",
               fontSize: "1.5rem",
-              color: "slategray"
+              color: "slategray",
             }}
           >
             <div>TODO_APP</div>
             <div>
-              <PlusCircleFilled  style={{color:"#1890ff",fontSize:"2rem"}}/>
+              <PlusCircleFilled
+                style={{ color: "#1890ff", fontSize: "2rem" }}
+                onClick={this.showModal}
+              />
             </div>
           </div>
           <div
@@ -115,32 +163,42 @@ class Todos extends Component<AllProps, State> {
             </div>
           </div>
           <div>
-            <Tabs onChange={this.tabChange} type="card">
-              <TabPane tab="All tasks" key="1">
-                <AllTodos todos={todos} loading={loading}/>
-              </TabPane>
-              <TabPane tab="Completed" key="2">
-                <CompletedTodos />
-              </TabPane>
-              <TabPane tab="Pending" key="3">
-                <PendingTasks />
-              </TabPane>
+            <Tabs
+              onChange={this.tabChange}
+              type="card"
+              defaultActiveKey={this.state.tab}
+            >
+              <TabPane tab="All tasks" key="1" />
+
+              <TabPane tab="Completed" key="2" />
+
+              <TabPane tab="Pending" key="3" />
             </Tabs>
           </div>
+          <AllTodos todos={todos} loading={loading} tab={tab} />
+          {visible && (
+            <PopUp
+              visible={visible}
+              cancelModal={this.handleCancel}
+              onFinish={this.onFinish}
+              loading={loading}
+            />
+          )}
         </div>
       </Fragment>
     );
   }
 }
 
-const mapStateToProps: any = ({todos}:ApplicationState) => ({
-  loading:todos.loading,
-  todos:todos.todos,
-  error:todos.errors
+const mapStateToProps: any = ({ todos }: ApplicationState) => ({
+  loading: todos.loading,
+  todos: todos.todos,
+  error: todos.errors,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
-onTodo:()=>dispatch(todoRequest())
+  onTodo: () => dispatch(todoRequest()),
+  onTodoCreate: (params: Todo) => dispatch(todoCreateRequest(params)),
 });
 
 export default connect<any>(mapStateToProps, mapDispatchToProps)(Todos);
