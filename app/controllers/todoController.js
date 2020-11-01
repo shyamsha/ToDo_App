@@ -75,7 +75,7 @@ router.put("/todos/:id", (req, res) => {
     }
   )
     .then((todo) => {
-      res.send(todo);
+      Todo.find().then((todo) => res.send(todo));
     })
     .catch((err) => {
       res.send(err);
@@ -90,11 +90,23 @@ router.delete("/todos/delete/:id", (req, res) => {
       if (todo) {
         Todo.find().then((todo) => res.send(todo));
       }
-      res.send("contact deleted successfully");
     })
     .catch((err) => {
       res.send(err);
     });
+});
+
+router.get("/search/todos", (req, res) => {
+  const text = req.query.value;
+  Todo.find({ $text: { $search: text } }).exec()
+  .then((todos) => {
+    if (todos.length !== 0) {
+      res.send(todos);
+    } else {
+      Todo.find().then((todo) => res.send(todo));
+    }
+  })
+  .catch((err) => res.send(err));
 });
 
 module.exports = {

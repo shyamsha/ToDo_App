@@ -1,11 +1,18 @@
 import React, { Component, Dispatch, Fragment } from "react";
-import { Tabs } from "antd";
+import { Spin, Tabs } from "antd";
 import AllTodos from "./views/AllTodos";
 import { Select, Input } from "antd";
 import { connect } from "react-redux";
 import { PlusCircleFilled } from "@ant-design/icons";
 import { ApplicationState } from "../../store";
-import { todoCreateRequest, todoRequest } from "./actions";
+import {
+  todoByIdRequest,
+  todoCreateRequest,
+  todoDeleteRequest,
+  todoEditRequest,
+  todoRequest,
+  todoSearchRequest,
+} from "./actions";
 import { Todo } from "./types";
 import PopUp from "./views/PopUp";
 import moment from "moment";
@@ -17,6 +24,7 @@ const { TabPane } = Tabs;
 interface PropsFromState {
   loading: boolean;
   todos: Todo[];
+  todo: Todo;
   error: {
     todo: string;
   };
@@ -25,6 +33,10 @@ interface PropsFromState {
 interface PropsDispatchFromState {
   onTodo: typeof todoRequest;
   onTodoCreate: typeof todoCreateRequest;
+  onGetTodo: typeof todoByIdRequest;
+  onEditTodo: typeof todoEditRequest;
+  onDeleteTodo: typeof todoDeleteRequest;
+  onSearchTodo: typeof todoSearchRequest;
 }
 
 type AllProps = PropsFromState & PropsDispatchFromState;
@@ -56,8 +68,9 @@ class Todos extends Component<AllProps, State> {
 
   selectChange = (value: string) => {};
 
-  onSearch = (value: string) => {
+  search = (value: string) => {
     console.log(value);
+    this.props.onSearchTodo({ value: value });
   };
 
   showModal = () => {
@@ -157,7 +170,7 @@ class Todos extends Component<AllProps, State> {
             <div>
               <Search
                 placeholder="input search text"
-                onSearch={this.onSearch}
+                onSearch={this.search}
                 style={{ width: 200 }}
               />
             </div>
@@ -175,7 +188,15 @@ class Todos extends Component<AllProps, State> {
               <TabPane tab="Pending" key="3" />
             </Tabs>
           </div>
-          <AllTodos todos={todos} loading={loading} tab={tab} />
+          <AllTodos
+            todos={todos}
+            loading={loading}
+            tab={tab}
+            showModal={this.showModal}
+            getTodo={this.props.onGetTodo}
+            DeleteTodo={this.props.onDeleteTodo}
+          />
+          {JSON.stringify(visible)}
           {visible && (
             <PopUp
               visible={visible}
@@ -193,12 +214,20 @@ class Todos extends Component<AllProps, State> {
 const mapStateToProps: any = ({ todos }: ApplicationState) => ({
   loading: todos.loading,
   todos: todos.todos,
+  todo: todos.todo,
   error: todos.errors,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
   onTodo: () => dispatch(todoRequest()),
   onTodoCreate: (params: Todo) => dispatch(todoCreateRequest(params)),
+  onGetTodo: (params: { _id: string }) => dispatch(todoByIdRequest(params)),
+  onEditTodo: (params: { id: string; data: Todo }) =>
+    dispatch(todoEditRequest(params)),
+  onDeleteTodo: (params: { _id: string }) =>
+    dispatch(todoDeleteRequest(params)),
+  onSearchTodo: (params: { value: string }) =>
+    dispatch(todoSearchRequest(params)),
 });
 
 export default connect<any>(mapStateToProps, mapDispatchToProps)(Todos);

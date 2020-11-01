@@ -35,6 +35,7 @@ const todoSchema = new Schema({
         default: Date.now
     }
 })
+todoSchema.index({'$**': 'text'});
 //create a model
 const Todo = mongoose.model('Todo', todoSchema)
 module.exports = {

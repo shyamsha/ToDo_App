@@ -15,22 +15,27 @@ export const todoCreate = (params: Todo) => {
   return API.post(url, params, config);
 };
 
-export const todoEdit = (params: { id: string }) => {
+export const todoEdit = (params: { id: string; data: Todo }) => {
   const url = `${API_ENDPOINT}/todo/${params.id}`;
+  return API.put(url, params.data);
+};
+
+export const todoDelete = (params: { _id: string }) => {
+  const url = `${API_ENDPOINT}/todos/delete/${params._id}`;
+  return API.deleteResource(url);
+};
+
+export const todoSearch = (params: { value: string }) => {
+  const url = `${API_ENDPOINT}/search/todos?value=${params.value}`;
   return API.get(url);
 };
 
-export const todoDelete =(params: { id: string })=>{
-  const url=`${API_ENDPOINT}/todos/delete/${params.id}`
-  return API.deleteResource(url)
-}
-
-export const todoCurrentState = (params:{currentState:string}) => {
-  const url = `${API_ENDPOINT}/todos/about?currentState=${params.currentState}`;
+export const todos = () => {
+  const url = `${API_ENDPOINT}/todos`;
   return API.get(url);
 };
 
-export const todos=()=>{
-  const url =`${API_ENDPOINT}/todos`;
-  return API.get(url)
-}
+export const todoById = (params: { _id: string }) => {
+  const url = `${API_ENDPOINT}/todos/${params._id}`;
+  return API.get(url);
+};
