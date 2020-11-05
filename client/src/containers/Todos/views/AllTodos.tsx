@@ -16,8 +16,10 @@ interface Props {
 
 export default function AllTodos(props: Props) {
   const [reOpen, setReOpen] = useState(false);
+  const [id, setId] = useState("");
 
   const visibleModal = (id: string) => {
+    setId(id);
     props.getTodo({ _id: id });
     props.showModal();
   };
@@ -101,7 +103,7 @@ export default function AllTodos(props: Props) {
             </span>
 
             <span style={{ padding: "0 0.5rem" }}>
-              {record._id && reOpen ? (
+              {record._id!==id && !reOpen ? (
                 <Button type="primary" size="small" onClick={toggle}>
                   Done
                 </Button>
@@ -126,7 +128,7 @@ export default function AllTodos(props: Props) {
       },
     },
   ];
-  
+
   if (props.loading) {
     return (
       <div
